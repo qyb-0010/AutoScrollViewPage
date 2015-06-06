@@ -12,6 +12,11 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
 
     private static final int DEFAULT_SIZE = 100;
 
+    private ViewPager mViewPager;
+
+    private int mCurrentItem;
+    private int mTotalCount;
+
     public PagerIndicator(Context context) {
         this(context, null);
     }
@@ -38,6 +43,13 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public void setViewPager (ViewPager viewPager) {
+        mViewPager = viewPager;
+        mViewPager.setOnPageChangeListener(this);
+        mCurrentItem = mViewPager.getCurrentItem();
+        mTotalCount = mViewPager.getAdapter().getCount();
     }
 
     @Override

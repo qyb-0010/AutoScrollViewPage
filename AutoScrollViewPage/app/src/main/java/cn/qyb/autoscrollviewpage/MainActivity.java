@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
         viewPage.startScroll();
     }
 
-    private class MyPageAdapter extends PagerAdapter {
+    public class MyPageAdapter extends PagerAdapter {
 
         private List<ImageView> mViews;
 
