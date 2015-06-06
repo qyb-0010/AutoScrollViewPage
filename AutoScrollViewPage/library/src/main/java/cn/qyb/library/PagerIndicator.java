@@ -46,6 +46,9 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
     }
 
     public void setViewPager (ViewPager viewPager) {
+        if (viewPager.getAdapter() == null) {
+            throw new IllegalArgumentException("adapter can't be null");
+        }
         mViewPager = viewPager;
         mViewPager.setOnPageChangeListener(this);
         mCurrentItem = mViewPager.getCurrentItem();
