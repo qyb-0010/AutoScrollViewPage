@@ -24,7 +24,6 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
     private Handler mHandler;
     private int mCurrentItem = 0;
     private int mSlideMode;
-    private float mTouchX;
     private float mDownX;
 
     public AutoScrollViewPage(Context context) {
@@ -89,16 +88,16 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
             }
         }
         if (mSlideMode == MODE_SLIDE_TO_PARENT) {
-            mTouchX = ev.getX();
+            float touchX = ev.getX();
             if (action == MotionEvent.ACTION_DOWN) {
-                mDownX = mTouchX;
+                mDownX = touchX;
             }
             int currentItem = getCurrentItem();
             PagerAdapter adapter = getAdapter();
             int totalCount = adapter == null ? 0 : adapter.getCount();
 
-            if (currentItem == 0 && mDownX <= mTouchX ||
-                    currentItem == totalCount - 1 || mDownX >= mTouchX) {
+            if (currentItem == 0 && mDownX <= touchX ||
+                    currentItem == totalCount - 1 || mDownX >= touchX) {
                 getParent().requestDisallowInterceptTouchEvent(false);
                 return super.dispatchTouchEvent(ev);
             }
