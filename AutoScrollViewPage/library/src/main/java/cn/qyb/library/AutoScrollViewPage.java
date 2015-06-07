@@ -58,7 +58,7 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
 
     private void scrollToNext() {
         PagerAdapter adapter = getAdapter();
-        int totalCount = 0;
+        int totalCount;
         if (adapter == null || adapter.getCount() <= 1) {
             return;
         }
