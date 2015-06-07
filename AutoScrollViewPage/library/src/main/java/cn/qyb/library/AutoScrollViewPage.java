@@ -6,22 +6,22 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHandler{
 
     private static final int MSG_SCROLL = 1;
+    private static final int DEFAULT_INTERVAL = 2000;
 
-    private boolean isScrolling;
+    private boolean isAutoScroll;
 
-    private long mDelayTime;
-    private long mDivideTime;
+    private long mInterval;
 
     private Handler mHandler;
     private int mCurrentItem = 0;
 
     public AutoScrollViewPage(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public AutoScrollViewPage(Context context, AttributeSet attrs) {
@@ -31,11 +31,21 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
 
     private void init() {
         mHandler = new NoLeakHandler(this);
+        mInterval = DEFAULT_INTERVAL;
     }
 
     public void startScroll() {
+        isAutoScroll = true;
+        sendScrollMsg(mInterval);
+    }
+
+    public void startScroll(long timeDelay) {
+        sendScrollMsg(timeDelay);
+    }
+
+    private void sendScrollMsg(long timeDelay) {
         mHandler.removeMessages(MSG_SCROLL);
-        mHandler.sendEmptyMessageDelayed(MSG_SCROLL, 3000);
+        mHandler.sendEmptyMessageDelayed(MSG_SCROLL, timeDelay);
     }
 
     private void scrollToNext() {
@@ -45,7 +55,7 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
             return;
         }
         totalCount = adapter.getCount();
-        int nextItem = ++mCurrentItem;
+        int nextItem = ++ mCurrentItem;
         if (nextItem == totalCount) {
             mCurrentItem = 0;
             setCurrentItem(mCurrentItem, true);
@@ -55,7 +65,13 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
     }
 
     public void stopScroll () {
+        isAutoScroll = false;
+        mHandler.removeMessages(MSG_SCROLL);
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -63,8 +79,16 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
         switch (msg.what) {
             case MSG_SCROLL:
                 scrollToNext();
-                startScroll();
+                sendScrollMsg(mInterval);
                 break;
         }
+    }
+
+    public void setInterval(long interval) {
+        this.mInterval = interval;
+    }
+
+    public boolean isScrolling() {
+        return isAutoScroll;
     }
 }
