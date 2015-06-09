@@ -1,8 +1,11 @@
 package cn.qyb.library;
 
+import android.animation.Animator;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 
 /**
@@ -11,10 +14,15 @@ import android.widget.LinearLayout;
 public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChangeListener{
 
     private static final int DEFAULT_SIZE = 100;
+    private static final int DEFAULT_INDICATOR_RADIUS = 10;
+    private static final int DEFAULT_SPACE = 10;
 
     private ViewPager mViewPager;
 
-    private int mCurrentItem;
+    private int mIndicatorRadius;
+    private int mSpace;
+
+    private int mCurrentItem = 0;
     private int mTotalCount;
 
     public PagerIndicator(Context context) {
@@ -27,7 +35,13 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
     }
 
     private void init() {
+        setOrientation(HORIZONTAL);
+        configIndicator();
+    }
 
+    private void configIndicator() {
+        mIndicatorRadius = DEFAULT_INDICATOR_RADIUS;
+        mSpace = DEFAULT_SPACE;
     }
 
     @Override
@@ -53,6 +67,27 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
         mViewPager.setOnPageChangeListener(this);
         mCurrentItem = mViewPager.getCurrentItem();
         mTotalCount = mViewPager.getAdapter().getCount();
+        createIndicator();
+    }
+
+    private void createIndicator() {
+        removeAllViews();
+        if (mTotalCount > 1) {
+            addIndicator();
+            for (int i = 1; i < mTotalCount; i++) {
+                addIndicator();
+            }
+        }
+    }
+
+    private void addIndicator() {
+        View indicator = new View(getContext());
+        indicator.setBackgroundColor(Color.BLUE);
+        addView(indicator, mIndicatorRadius, mIndicatorRadius);
+        LayoutParams params = (LayoutParams) indicator.getLayoutParams();
+        params.leftMargin = mSpace / 2;
+        params.rightMargin = mSpace / 2;
+        indicator.setLayoutParams(params);
     }
 
     @Override
