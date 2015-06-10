@@ -1,19 +1,15 @@
 package cn.qyb.library;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorInflater;
 
 /**
  * Created by qiaoyubo on 2015/6/6.
@@ -54,10 +50,13 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
             mAnimationOutResId = typedArray.getResourceId(R.styleable.PagerIndicator_animatorOut, 0);
             mSelectedDrawableResId = typedArray.getResourceId(R.styleable.PagerIndicator_drawableSelected, R.drawable.indicator_selected);
             mUnSelectedDrawableResId = typedArray.getResourceId(R.styleable.PagerIndicator_drawableUnselected, R.drawable.indicator_unselected);
-            // use nineoldandroids
-//            if (mAnimationInResId != 0) {
-//                mAnimationIn = AnimatorInflater.loadAnimator(context, mAnimationInResId);
-//            }
+            if (mAnimationInResId != 0) {
+                mAnimationIn = AnimatorInflater.loadAnimator(context, mAnimationInResId);
+            }
+            if (mAnimationOutResId != 0) {
+                mAnimationOut = AnimatorInflater.loadAnimator(context, mAnimationOutResId);
+            }
+            typedArray.recycle();
         }
         init();
     }
@@ -65,35 +64,29 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
     private void init() {
         setOrientation(HORIZONTAL);
         setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-//        initAnim();
     }
-
-//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-//    private void initAnim() {
-//    }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onPageSelected(int position) {
-//        if (mAnimationIn.isRunning()) {
-//            mAnimationIn.end();
-//        }
-//        if (mAnimationOut.isRunning()) {
-//            mAnimationOut.end();
-//        }
+        if (mAnimationIn.isRunning()) {
+            mAnimationIn.end();
+        }
+        if (mAnimationOut.isRunning()) {
+            mAnimationOut.end();
+        }
         View preIndicator = getChildAt(mCurrentItem % mTotalCount);
         preIndicator.setBackgroundResource(mUnSelectedDrawableResId);
-//        mAnimationOut.setTarget(preIndicator);
-//        mAnimationOut.start();
+        mAnimationOut.setTarget(preIndicator);
+        mAnimationOut.start();
 
         View selectedIndicator = getChildAt(position);
         selectedIndicator.setBackgroundResource(mSelectedDrawableResId);
-//        mAnimationIn.setTarget(selectedIndicator);
-//        mAnimationIn.start();
+        mAnimationIn.setTarget(selectedIndicator);
+        mAnimationIn.start();
 
         mCurrentItem = position;
     }
