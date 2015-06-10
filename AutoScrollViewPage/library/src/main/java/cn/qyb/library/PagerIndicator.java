@@ -43,7 +43,7 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
 
     private void init() {
         setOrientation(HORIZONTAL);
-        setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
         configIndicator();
 //        initAnim();
     }

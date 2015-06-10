@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
         MyPageAdapter adapter = new MyPageAdapter(views);
         viewPage.setAdapter(adapter);
         mIndicator.setViewPager(viewPage);
+        viewPage.setDirection(AutoScrollViewPage.DIRECTION_LEFT);
         viewPage.startScroll();
     }
 

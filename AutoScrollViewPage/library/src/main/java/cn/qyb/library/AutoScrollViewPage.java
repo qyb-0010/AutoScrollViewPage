@@ -13,6 +13,9 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
     public static final int MODE_SLIDE_NONE = 0;
     public static final int MODE_SLIDE_TO_PARENT = 1;
 
+    public static final int DIRECTION_LEFT = 10;
+    public static final int DIRECTION_RIGHT = 11;
+
     private static final int MSG_SCROLL = 1;
     private static final int DEFAULT_INTERVAL = 2000;
 
@@ -25,6 +28,7 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
     private int mCurrentItem = 0;
     private int mSlideMode;
     private float mDownX;
+    private int mDirection;
 
     public AutoScrollViewPage(Context context) {
         this(context, null);
@@ -39,6 +43,7 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
         mHandler = new NoLeakHandler(this);
         mInterval = DEFAULT_INTERVAL;
         mSlideMode = MODE_SLIDE_NONE;
+        mDirection = DIRECTION_RIGHT;
     }
 
     public void startScroll() {
@@ -63,10 +68,12 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
             return;
         }
         totalCount = adapter.getCount();
-        int nextItem = ++ mCurrentItem;
-        if (nextItem == totalCount) {
-            mCurrentItem = 0;
-            setCurrentItem(mCurrentItem, true);
+        mCurrentItem = getCurrentItem();
+        int nextItem = mDirection == DIRECTION_RIGHT ? ++ mCurrentItem : --mCurrentItem;
+        if (nextItem < 0) {
+            setCurrentItem(totalCount -1, true);
+        } else if (nextItem == totalCount) {
+            setCurrentItem(0, true);
         } else {
             setCurrentItem(nextItem, true);
         }
@@ -97,7 +104,7 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
             int totalCount = adapter == null ? 0 : adapter.getCount();
 
             if (currentItem == 0 && mDownX <= touchX ||
-                    currentItem == totalCount - 1 || mDownX >= touchX) {
+                    currentItem == totalCount - 1 && mDownX >= touchX) {
                 getParent().requestDisallowInterceptTouchEvent(false);
                 return super.dispatchTouchEvent(ev);
             }
@@ -120,6 +127,10 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
         this.mInterval = interval;
     }
 
+    public long getInterval() {
+        return mInterval;
+    }
+
     public void setStopScrollWhenTouch(boolean stopScrollWhenTouch) {
         mStopScrollWhenTouch = stopScrollWhenTouch;
     }
@@ -128,7 +139,19 @@ public class AutoScrollViewPage extends ViewPager implements NoLeakHandler.MsgHa
         mSlideMode = mode;
     }
 
+    public int getSlideMode() {
+        return mSlideMode;
+    }
+
     public boolean isScrolling() {
         return isAutoScroll;
+    }
+
+    public void setDirection(int direction) {
+        mDirection = direction;
+    }
+
+    public int getDirection() {
+        return mDirection;
     }
 }
