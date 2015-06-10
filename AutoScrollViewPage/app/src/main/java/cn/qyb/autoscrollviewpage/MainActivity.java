@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.qyb.library.AutoScrollViewPage;
+import cn.qyb.library.PagerIndicator;
 
 
 public class MainActivity extends Activity {
@@ -18,6 +19,8 @@ public class MainActivity extends Activity {
     private AutoScrollViewPage viewPage;
     private int[] imgRes = new int[]{R.mipmap.img1, R.mipmap.img2, R.mipmap.img3, R.mipmap.img4};
     private List<ImageView> views;
+
+    private PagerIndicator mIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class MainActivity extends Activity {
 
     private void initViews() {
         viewPage = (AutoScrollViewPage) findViewById(R.id.vp);
+        mIndicator = (PagerIndicator) findViewById(R.id.indicator);
         views = new ArrayList<>();
         for (int i = 0; i < imgRes.length; i++) {
             ImageView iv = new ImageView(this);
@@ -38,6 +42,7 @@ public class MainActivity extends Activity {
 
         MyPageAdapter adapter = new MyPageAdapter(views);
         viewPage.setAdapter(adapter);
+        mIndicator.setViewPager(viewPage);
         viewPage.startScroll();
     }
 

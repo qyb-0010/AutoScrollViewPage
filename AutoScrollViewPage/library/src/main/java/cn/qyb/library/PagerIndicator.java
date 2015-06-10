@@ -1,10 +1,14 @@
 package cn.qyb.library;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -14,8 +18,8 @@ import android.widget.LinearLayout;
 public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChangeListener{
 
     private static final int DEFAULT_SIZE = 100;
-    private static final int DEFAULT_INDICATOR_RADIUS = 10;
-    private static final int DEFAULT_SPACE = 10;
+    private static final int DEFAULT_INDICATOR_RADIUS = 20;
+    private static final int DEFAULT_SPACE = 20;
 
     private ViewPager mViewPager;
 
@@ -24,6 +28,9 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
 
     private int mCurrentItem = 0;
     private int mTotalCount;
+
+    private Animator mAnimationIn;
+    private Animator mAnimationOut;
 
     public PagerIndicator(Context context) {
         this(context, null);
@@ -36,8 +43,14 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
 
     private void init() {
         setOrientation(HORIZONTAL);
+        setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         configIndicator();
+//        initAnim();
     }
+
+//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+//    private void initAnim() {
+//    }
 
     private void configIndicator() {
         mIndicatorRadius = DEFAULT_INDICATOR_RADIUS;
@@ -46,17 +59,32 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onPageSelected(int position) {
+//        if (mAnimationIn.isRunning()) {
+//            mAnimationIn.end();
+//        }
+//        if (mAnimationOut.isRunning()) {
+//            mAnimationOut.end();
+//        }
+        View preIndicator = getChildAt(mCurrentItem % mTotalCount);
+        preIndicator.setBackgroundResource(R.drawable.indicator_unselected);
+//        mAnimationOut.setTarget(preIndicator);
+//        mAnimationOut.start();
 
+        View selectedIndicator = getChildAt(position);
+        selectedIndicator.setBackgroundResource(R.drawable.indicator_selected);
+//        mAnimationIn.setTarget(selectedIndicator);
+//        mAnimationIn.start();
+
+        mCurrentItem = position;
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
     }
 
     public void setViewPager (ViewPager viewPager) {
@@ -73,16 +101,16 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
     private void createIndicator() {
         removeAllViews();
         if (mTotalCount > 1) {
-            addIndicator();
+            addIndicator(R.drawable.indicator_selected);
             for (int i = 1; i < mTotalCount; i++) {
-                addIndicator();
+                addIndicator(R.drawable.indicator_unselected);
             }
         }
     }
 
-    private void addIndicator() {
+    private void addIndicator(int backgroundRes) {
         View indicator = new View(getContext());
-        indicator.setBackgroundColor(Color.BLUE);
+        indicator.setBackgroundResource(backgroundRes);
         addView(indicator, mIndicatorRadius, mIndicatorRadius);
         LayoutParams params = (LayoutParams) indicator.getLayoutParams();
         params.leftMargin = mSpace / 2;
@@ -90,32 +118,4 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
         indicator.setLayoutParams(params);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width;
-        int height;
-        int w = MeasureSpec.getSize(widthMeasureSpec);
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int h = MeasureSpec.getSize(heightMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        width = measureSize(w, widthMode);
-        height = measureSize(h, heightMode);
-
-        widthMeasureSpec = MeasureSpec.makeMeasureSpec(width, widthMode);
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, heightMode);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    private int measureSize(int size, int mode) {
-        int measuredSize;
-        if (mode == MeasureSpec.EXACTLY) {
-            measuredSize = size;
-        } else {
-            measuredSize = DEFAULT_SIZE;
-            if (mode == MeasureSpec.AT_MOST) {
-                measuredSize = Math.min(measuredSize, size);
-            }
-        }
-        return measuredSize;
-    }
 }

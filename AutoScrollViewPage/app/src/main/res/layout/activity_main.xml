@@ -3,9 +3,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <cn.qyb.library.AutoScrollViewPage
-        android:id="@+id/vp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="200dp">
+
+        <cn.qyb.library.AutoScrollViewPage
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <cn.qyb.library.PagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+
+
+
 
 </LinearLayout>
