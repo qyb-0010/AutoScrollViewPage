@@ -11,9 +11,6 @@ import android.widget.LinearLayout;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
 
-/**
- * Created by qiaoyubo on 2015/6/6.
- */
 public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChangeListener{
 
     private static final int DEFAULT_INDICATOR_RADIUS = 20;
@@ -63,7 +60,7 @@ public class PagerIndicator extends LinearLayout implements ViewPager.OnPageChan
 
     private void init() {
         setOrientation(HORIZONTAL);
-        setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        setGravity(Gravity.BOTTOM |Gravity.CENTER_HORIZONTAL);
     }
 
     @Override

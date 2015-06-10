@@ -47,6 +47,18 @@ public class MainActivity extends Activity {
         viewPage.startScroll();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewPage.startScroll();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        viewPage.stopScroll();
+    }
+
     public class MyPageAdapter extends PagerAdapter {
 
         private List<ImageView> mViews;
